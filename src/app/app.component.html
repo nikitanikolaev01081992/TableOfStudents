@@ -1,0 +1,78 @@
+<h1>{{title}}</h1>
+<div class="table-of-students">
+    <div class="table-of-students__filtration">
+        
+        <div class="gradeCheckbox">Подсвечивать тех у кого средний бал < 3<input #gradeCheckbox type="checkbox" checked (input)="false"></div>
+
+        <form class="find-criteries" (submit)="event.preventDefault()">
+            
+            <div class="find-item">
+                <label class="find-item__header">Фамилия и имя студента</label>
+                <div class="find-item__input"><input id="name" class="find-options__input" (input)="valuesToFind = $event.target.value"></div>
+            </div>
+
+            <div class="find-item">
+                <label class="find-item__header">Дата рождения</label>
+                <div class="find-item__input">От <input type="date" (input)="dateValueMin = $event.target.value"></div>
+                <div class="find-item__input">До <input type="date" (input)="dateValueMax = $event.target.value"></div>
+            </div>
+
+            <div class="find-item">
+                <label class="find-item__header">Средний балл</label>
+                <div class="find-item__input">Минимум <input  type="number" (input)="gradeValueMin = $event.target.value"></div>
+                <div class="find-item__input">Максимум <input type="number" (input)="gradeValueMax = $event.target.value"></div>
+            </div>
+
+            <div class="find-item">
+                <label class="find-item__header">Сортировка элементов</label>
+                <select class="find-item__sort-column" #sortColumn (input)="false">
+                    <option value="" disabled>Выберите колонку</option>
+                    <option value="surname">Фамилия</option>
+                    <option value="name">Имя</option>
+                    <option value="patronymic">Отчество</option>
+                    <option value="_dateOfBirth">Дата Рождения</option>
+                    <option value="avaregeGrade">Средний бал</option>
+                </select>
+                <select class="find-item__sort-order" #sortOrder (input)="false">
+                    <option value="" disabled>Выберите порядок</option>
+                    <option value="asc">По возрастанию</option>
+                    <option value="desc">По убыванию</option>
+                </select>
+            </div>
+
+        </form>
+    </div>
+
+    <table class="table-of-students__output">
+        <thead>
+            <tr>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Дата рождения</th>
+                <th>Средний балл</th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let item of getDataItem(sortColumn.value, sortOrder.value)" class="table__row" [ngClass]="{
+                'table__row_red': item.avaregeGrade < 3 && gradeCheckbox.checked,
+                'table__row_yellow': valuesToFind ? (item.surname + ' ' + item.name).toLowerCase().includes(valuesToFind.toLowerCase()) : false,
+                'table__row_hidden': !filterItem(item)
+            }">
+                <td>{{ item.surname }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.patronymic }}</td>
+                <td>{{ item.dateOfBirth }}</td>
+                <td>{{ item.avaregeGrade }}</td>
+                <td><input type="checkbox" (input)="deleteElem(item); $event.target.checked=false"></td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+</div>
+
+<router-outlet></router-outlet>
