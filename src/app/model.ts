@@ -16,6 +16,8 @@ export class ListOfStudents<T> {
             this.items.splice(index, 1);
         }
     }
+
+    static index: number = 0;
 }
 
 export class Student {
@@ -25,6 +27,7 @@ export class Student {
     _dateOfBirth: Date;
     avaregeGrade: number;
     isShown: boolean;
+    index: number;
 
     constructor(surname: string, name: string, patronymic: string, dateOfBirth: Date, avaregeGrade: number) {
         this.surname = surname;
@@ -34,6 +37,7 @@ export class Student {
         this.avaregeGrade = avaregeGrade;
 
         this.isShown = true;
+        this.index = ListOfStudents.index++;
     }
 
     // return nice date string

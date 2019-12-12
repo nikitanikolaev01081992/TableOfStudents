@@ -1,3 +1,5 @@
+<app-adding-form *ngIf="_showAddingForm" (_submit)="submitFromChild($event)"></app-adding-form>
+
 <h1>{{ title }}</h1>
 <div class="table-of-students">
     <div class="table-of-students__filtration">
@@ -62,6 +64,10 @@
         </form>
     </div>
 
+    <div>
+        <button (click)="showAddingForm()">Добавить студента</button>
+    </div>
+
     <table class="table-of-students__output">
         <thead>
             <tr>
@@ -76,7 +82,7 @@
 
         <tbody>
             <tr
-                *ngFor="let item of getDataItem(sortColumn.value, sortOrder.value)"
+                *ngFor="let item of getDataItem(sortColumn.value, sortOrder.value); trackBy: getIndex"
                 class="table__row"
                 [ngClass]="{
                     table__row_red: item.avaregeGrade < 3 && gradeCheckbox.checked,

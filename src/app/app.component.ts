@@ -9,18 +9,30 @@ import { ListOfStudents } from "./model";
 })
 export class AppComponent {
     title = "Таблица Студентов";
+    someData: ListOfStudents<Student>;
     valuesToFind: string = "";
     dateValueMin: string = "";
     dateValueMax: string = "";
     gradeValueMin: string = "";
     gradeValueMax: string = "";
+    _showAddingForm: boolean;
 
-    someData = new ListOfStudents<Student>(Student);
+    constructor() {
+        this.someData = new ListOfStudents<Student>(Student);
+        this._showAddingForm = false;
+    }
+
+    submitFromChild(item: any): void {
+        this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
+
+        console.log("submit from child component");
+        console.log(item);
+    }
 
     // sortColumn is value of link variable with the same name
     // sortOrder is value of link variable with the same name
     getDataItem(sortColumn: string, sortOrder: string): Array<Student> {
-        const copyOfOriginal: Array<Student> = this.someData.items;
+        const copyOfOriginal: Array<Student> = Array.from(this.someData.items);
 
         function compareFunction(a: Student, b: Student): number {
             let innerSortOrder: string = sortOrder;
@@ -80,5 +92,15 @@ export class AppComponent {
         if (+this.gradeValueMax < 0) {
             this.gradeValueMax = "0";
         }
+    }
+
+    // for optimization in ngFor
+    getIndex(index: number, item: Student): number {
+        return item.index;
+    }
+
+    // handler to show adding form
+    showAddingForm(): void {
+        this._showAddingForm = true;
     }
 }

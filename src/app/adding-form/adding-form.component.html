@@ -1,0 +1,50 @@
+<form novalidate [formGroup]="formModel" (ngSubmit)="_onSubmit($event)">
+    <div formGroupName="person">
+        <div>
+            <label>Фамилия:</label>
+            <input class="form-control" formControlName="surname" type="text" />
+
+            <div class="">
+                {{ getErrorText("surname") }}
+            </div>
+        </div>
+
+        <div>
+            <label>Имя:</label>
+            <input class="form-control" formControlName="name" type="text" />
+
+            <div class="">
+                {{ getErrorText("name") }}
+            </div>
+        </div>
+
+        <div>
+            <label>Отчество:</label>
+            <input class="form-control" formControlName="patronymic" type="text" />
+
+            <div class="">
+                {{ getErrorText("patronymic") }}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <label>Дата рождения:</label>
+        <input class="form-control" formControlName="_dateOfBirth" type="date" />
+
+        <div class="">
+            {{ getErrorText("_dateOfBirth") }}
+        </div>
+    </div>
+
+    <div>
+        <label>Средний бал:</label>
+        <input class="form-control" formControlName="avaregeGrade" type="number" />
+
+        <div class="">
+            {{ getErrorText("avaregeGrade") }}
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="!formModel.valid">Добавить</button>
+</form>
