@@ -9,11 +9,14 @@ import { EventEmitter } from "@angular/core";
 })
 export class AddingFormComponent implements OnInit {
     formModel: FormGroup;
-    validatorsForNames: ValidatorFn[] = [Validators.required, Validators.pattern("[A-Za-zа-яА-я]+"), Validators.minLength(2)];
+    validatorsForNames: ValidatorFn[];
+
 
     constructor() {}
 
     ngOnInit() {
+        this.validatorsForNames = [Validators.required, Validators.pattern("[A-Za-zа-яА-я]+"), Validators.minLength(2), this.validatePersonInfo];
+
         this.formModel = new FormGroup({
             person: new FormGroup({
                 surname: new FormControl("", this.validatorsForNames),
@@ -40,8 +43,35 @@ export class AddingFormComponent implements OnInit {
     }
 
     validateDate(control: AbstractControl): ValidationErrors | null {
-        let dateInControl: Date = new Date(control.value);
-        let validationDate: Date = new Date();
+        if (control.value !== "") {
+            let dateInControl: number = new Date(control.value).getFullYear();
+            let validationDate: number = new Date().getFullYear();
+
+            // not very exact way but let it be for now
+            if ((validationDate - dateInControl) < 10) {
+               return {["wrongAge"]: true};
+            }
+
+        }
+
+        return null;
+    }
+
+
+    validatePersonInfo(control: AbstractControl): ValidationErrors | null {
+        
+        if (control.parent) {
+            let name:AbstractControl = control.parent.get("name");
+            
+            if (name !== control && control.value !== "") {
+                if (name.value === control.value) {
+                    return {["wrongName"]: true};
+                }
+            } else if (name === control) {
+                control.parent.get("surname").updateValueAndValidity();
+                control.parent.get("patronymic").updateValueAndValidity();
+            }
+        }
 
         return null;
     }
@@ -49,18 +79,19 @@ export class AddingFormComponent implements OnInit {
     getErrorText(controlName: string): string {
         let errorText: string = "";
         let form: FormGroup;
+        let control: AbstractControl;
 
         switch (controlName) {
             case "surname":
             case "name":
             case "patronymic":
-                form = <FormGroup>this.formModel.controls.person;
+                control = this.formModel.controls.person.get(controlName);
                 break;
 
             default:
-                form = this.formModel;
+                control = this.formModel.controls[controlName]
         }
-        let control: AbstractControl = form.controls[controlName];
+        
 
         if (control && control.invalid && control.touched) {
             let errors: string[] = this.getErrorMessages(control.errors);
@@ -72,14 +103,22 @@ export class AddingFormComponent implements OnInit {
     private getErrorMessages(errors: ValidationErrors): string[] {
         let arrayErrors: string[] = [];
 
-        if (errors.minLength) {
-            arrayErrors.push("Недостаточная длина");
-        }
-        if (errors.required) {
-            arrayErrors.push("Заполните поле");
-        }
-        if (errors.pattern) {
-            arrayErrors.push("Неподходящее значение");
+        if (errors) {
+            if (errors.minlength) {
+                arrayErrors.push("Требуется минимум 2 символа");
+            }
+            if (errors.required) {
+                arrayErrors.push("Заполните поле");
+            }
+            if (errors.pattern) {
+                arrayErrors.push("Неподходящее значение");
+            }
+            if (errors.wrongAge) {
+                arrayErrors.push("Неверный возраст");
+            }
+            if (errors.wrongName) {
+                arrayErrors.push("Имя не может совпадать с данным полем");
+            }
         }
 
         return arrayErrors;

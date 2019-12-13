@@ -4,7 +4,7 @@
             <label>Фамилия:</label>
             <input class="form-control" formControlName="surname" type="text" />
 
-            <div class="">
+            <div class="form-alert">
                 {{ getErrorText("surname") }}
             </div>
         </div>
@@ -13,7 +13,7 @@
             <label>Имя:</label>
             <input class="form-control" formControlName="name" type="text" />
 
-            <div class="">
+            <div class="form-alert">
                 {{ getErrorText("name") }}
             </div>
         </div>
@@ -22,17 +22,19 @@
             <label>Отчество:</label>
             <input class="form-control" formControlName="patronymic" type="text" />
 
-            <div class="">
+            <div class="form-alert">
                 {{ getErrorText("patronymic") }}
             </div>
         </div>
+
+       
     </div>
 
     <div>
         <label>Дата рождения:</label>
         <input class="form-control" formControlName="_dateOfBirth" type="date" />
 
-        <div class="">
+        <div class="form-alert">
             {{ getErrorText("_dateOfBirth") }}
         </div>
     </div>
@@ -41,7 +43,7 @@
         <label>Средний бал:</label>
         <input class="form-control" formControlName="avaregeGrade" type="number" />
 
-        <div class="">
+        <div class="form-alert">
             {{ getErrorText("avaregeGrade") }}
         </div>
     </div>
