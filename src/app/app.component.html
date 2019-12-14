@@ -1,4 +1,4 @@
-<app-adding-form *ngIf="_showAddingForm" (_submit)="submitFromChild($event)"></app-adding-form>
+<app-adding-form *ngIf="_showAddingForm" [dataFromParent]="getInfoForAddingForm()" (_submit)="submitFromChild($event)"></app-adding-form>
 
 <h1>{{ title }}</h1>
 <div class="table-of-students">
@@ -65,7 +65,7 @@
     </div>
 
     <div>
-        <button (click)="showAddingForm()">Добавить студента</button>
+        <button (click)="showAddingForm('update')">Добавить студента</button>
     </div>
 
     <table class="table-of-students__output">
@@ -97,6 +97,9 @@
                 <td>{{ item.avaregeGrade }}</td>
                 <td>
                     <input type="checkbox" (input)="deleteElem(item); $event.target.checked = false" />
+                </td>
+                <td>
+                    <button (click)="showAddingForm('modify')">Изменить</button>
                 </td>
             </tr>
         </tbody>

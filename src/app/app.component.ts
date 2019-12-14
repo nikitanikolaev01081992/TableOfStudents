@@ -16,17 +16,19 @@ export class AppComponent {
     gradeValueMin: string = "";
     gradeValueMax: string = "";
     _showAddingForm: boolean;
+    updateOrModify: string = ""
 
     constructor() {
         this.someData = new ListOfStudents<Student>(Student);
         this._showAddingForm = false;
+        this.updateOrModify = "update";
     }
 
     submitFromChild(item: any): void {
-        this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
+        if (item.updateOrModify === "update") {
+            this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
+        }
 
-        console.log("submit from child component");
-        console.log(item);
     }
 
     // sortColumn is value of link variable with the same name
@@ -100,7 +102,16 @@ export class AppComponent {
     }
 
     // handler to show adding form
-    showAddingForm(): void {
+    showAddingForm(updateOrModify: string): void {
         this._showAddingForm = true;
+        this.updateOrModify = updateOrModify;
+    }
+
+
+    // provide information for adding form
+    getInfoForAddingForm(): any {
+        if (true) {
+
+        }
     }
 }

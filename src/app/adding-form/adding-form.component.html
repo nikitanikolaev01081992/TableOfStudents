@@ -1,8 +1,9 @@
 <form novalidate [formGroup]="formModel" (ngSubmit)="_onSubmit($event)">
     <div formGroupName="person">
         <div>
-            <label>Фамилия:</label>
-            <input class="form-control" formControlName="surname" type="text" />
+            <label>Фамилия:
+                <input class="form-control" formControlName="surname" type="text" />
+            </label>
 
             <div class="form-alert">
                 {{ getErrorText("surname") }}
@@ -10,8 +11,9 @@
         </div>
 
         <div>
-            <label>Имя:</label>
-            <input class="form-control" formControlName="name" type="text" />
+            <label>Имя:
+                <input class="form-control" formControlName="name" type="text" />
+            </label>
 
             <div class="form-alert">
                 {{ getErrorText("name") }}
@@ -19,8 +21,9 @@
         </div>
 
         <div>
-            <label>Отчество:</label>
-            <input class="form-control" formControlName="patronymic" type="text" />
+            <label>Отчество:
+                <input class="form-control" formControlName="patronymic" type="text" />
+            </label>
 
             <div class="form-alert">
                 {{ getErrorText("patronymic") }}
@@ -31,8 +34,9 @@
     </div>
 
     <div>
-        <label>Дата рождения:</label>
-        <input class="form-control" formControlName="_dateOfBirth" type="date" />
+        <label>Дата рождения:
+            <input class="form-control" formControlName="_dateOfBirth" type="date" />
+        </label>
 
         <div class="form-alert">
             {{ getErrorText("_dateOfBirth") }}
@@ -40,8 +44,9 @@
     </div>
 
     <div>
-        <label>Средний бал:</label>
-        <input class="form-control" formControlName="avaregeGrade" type="number" />
+        <label>Средний бал:
+            <input class="form-control" formControlName="avaregeGrade" type="number" />
+        </label>
 
         <div class="form-alert">
             {{ getErrorText("avaregeGrade") }}
