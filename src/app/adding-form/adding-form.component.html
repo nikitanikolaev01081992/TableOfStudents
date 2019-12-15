@@ -1,57 +1,57 @@
-<form novalidate [formGroup]="formModel" (ngSubmit)="_onSubmit($event)">
-    <div formGroupName="person">
-        <div>
-            <label>Фамилия:
-                <input class="form-control" formControlName="surname" type="text" />
-            </label>
+<div class="background"></div>
 
-            <div class="form-alert">
-                {{ getErrorText("surname") }}
+<div class="adding-form-container">
+    <form class="adding-form" novalidate [formGroup]="formModel" (ngSubmit)="_onSubmit($event)">
+        <div formGroupName="person">
+            <div class="form-control_container">
+                <label> Фамилия: </label>
+                <input class="form-control_container__control" formControlName="surname" type="text" />
+
+                <div class="form-control_container__alert">
+                    {{ getErrorText("surname") }}
+                </div>
+            </div>
+
+            <div class="form-control_container">
+                <label> Имя: </label>
+                <input class="form-control_container__control" formControlName="name" type="text" />
+
+                <div class="form-control_container__alert">
+                    {{ getErrorText("name") }}
+                </div>
+            </div>
+
+            <div class="form-control_container">
+                <label> Отчество: </label>
+                <input class="form-control_container__control" formControlName="patronymic" type="text" />
+
+                <div class="form-control_container__alert">
+                    {{ getErrorText("patronymic") }}
+                </div>
             </div>
         </div>
 
-        <div>
-            <label>Имя:
-                <input class="form-control" formControlName="name" type="text" />
-            </label>
+        <div class="form-control_container">
+            <label> Дата рождения: </label>
+            <input class="form-control_container__control" formControlName="_dateOfBirth" type="date" />
 
-            <div class="form-alert">
-                {{ getErrorText("name") }}
+            <div class="form-control_container__alert">
+                {{ getErrorText("_dateOfBirth") }}
             </div>
         </div>
 
-        <div>
-            <label>Отчество:
-                <input class="form-control" formControlName="patronymic" type="text" />
-            </label>
+        <div class="form-control_container">
+            <label> Средний бал: </label>
+            <input class="form-control_container__control" formControlName="avaregeGrade" type="number" (paste)="(false)" min="0" max="5" step="0.1" />
 
-            <div class="form-alert">
-                {{ getErrorText("patronymic") }}
+            <div class="form-control_container__alert">
+                {{ getErrorText("avaregeGrade") }}
             </div>
         </div>
 
-       
-    </div>
-
-    <div>
-        <label>Дата рождения:
-            <input class="form-control" formControlName="_dateOfBirth" type="date" />
-        </label>
-
-        <div class="form-alert">
-            {{ getErrorText("_dateOfBirth") }}
-        </div>
-    </div>
-
-    <div>
-        <label>Средний бал:
-            <input class="form-control" formControlName="avaregeGrade" type="number" />
-        </label>
-
-        <div class="form-alert">
-            {{ getErrorText("avaregeGrade") }}
-        </div>
-    </div>
-
-    <button type="submit" [disabled]="!formModel.valid">Добавить</button>
-</form>
+        <button class="adding-form__button" type="submit" [disabled]="!formModel.valid">
+            {{ updateOrModify === "update" ? "Добавить" : "Изменить" }}
+        </button>
+        <button class="adding-form__button" (click)="closeMe()">Отмена</button>
+    </form>
+</div>

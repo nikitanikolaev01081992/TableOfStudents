@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, OnChanges } from "@angular/core";
 import { FormGroup, FormControl, Validators, PatternValidator, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { EventEmitter } from "@angular/core";
 import { InvokeFunctionExpr } from "@angular/compiler";
+import { Student } from "../model";
 
 @Component({
     selector: "app-adding-form",
@@ -11,17 +12,10 @@ import { InvokeFunctionExpr } from "@angular/compiler";
 export class AddingFormComponent implements OnInit {
     formModel: FormGroup;
     validatorsForNames: ValidatorFn[];
-    @Input() dataFromParent: {
-        surname: string, 
-        name: string,
-        patronymic: string,
-        _dateOfBirth: string,
-        avaregeGrade: string,
-        index: number,
-        updateOrModify: string
-    };
+    @Input() dataFromParent: Student;
+    @Input() updateOrModify: string;
     @Output() _submit = new EventEmitter();
-
+    @Output() _close = new EventEmitter();
 
     constructor() {}
 
@@ -34,24 +28,23 @@ export class AddingFormComponent implements OnInit {
                 name: new FormControl(this.dataFromParent.name, this.validatorsForNames),
                 patronymic: new FormControl(this.dataFromParent.patronymic, this.validatorsForNames),
             }),
-            _dateOfBirth: new FormControl(this.dataFromParent._dateOfBirth, [Validators.required, this.validateDate]),
-            avaregeGrade: new FormControl(this.dataFromParent.avaregeGrade, [Validators.required, Validators.pattern("[0-5]")]),
+            _dateOfBirth: new FormControl(this.dataFromParent.dateOfBirth, [Validators.required, this.validateDate]),
+            avaregeGrade: new FormControl(this.dataFromParent.avaregeGrade, [Validators.required, this.validateAvaregeGrade]),
         });
     }
 
-    
     _onSubmit(event: Event): void {
-        let item = {
-            surname: this.formModel.value.person.surname,
-            name: this.formModel.value.person.name,
-            patronymic: this.formModel.value.person.patronymic,
-            _dateOfBirth: new Date(this.formModel.value._dateOfBirth),
-            avaregeGrade: +this.formModel.value.avaregeGrade,
-            index: this.dataFromParent.index,
-            updateOrModify: this.dataFromParent.updateOrModify
-        };
-
+        let item: Student = Object.assign({}, this.dataFromParent, { updateOrModify: this.updateOrModify });
+        item.surname = this.formModel.get("person.surname").value;
+        item.name = this.formModel.get("person.name").value;
+        item.patronymic = this.formModel.get("person.patronymic").value;
+        item._dateOfBirth = new Date(this.formModel.get("_dateOfBirth").value);
+        item.avaregeGrade = +this.formModel.get("avaregeGrade").value;
         this._submit.emit(item);
+    }
+
+    closeMe(): void {
+        this._close.emit();
     }
 
     validateDate(control: AbstractControl): ValidationErrors | null {
@@ -60,24 +53,27 @@ export class AddingFormComponent implements OnInit {
             let validationDate: number = new Date().getFullYear();
 
             // not very exact way but let it be for now
-            if ((validationDate - dateInControl) < 10) {
-               return {["wrongAge"]: true};
+            if (validationDate - dateInControl < 10) {
+                return { ["wrongAge"]: true };
             }
-
         }
 
         return null;
     }
 
+    validateAvaregeGrade(control: AbstractControl): ValidationErrors | null {
+        if (+control.value < 0) {
+            return { ["wrongAvaregeGrade"]: true };
+        }
+    }
 
     validatePersonInfo(control: AbstractControl): ValidationErrors | null {
-        
         if (control.parent) {
-            let name:AbstractControl = control.parent.get("name");
-            
+            let name: AbstractControl = control.parent.get("name");
+
             if (name !== control && control.value !== "") {
-                if (name.value === control.value) {
-                    return {["wrongName"]: true};
+                if (name.value.toLowerCase() === control.value.toLowerCase()) {
+                    return { ["wrongName"]: true };
                 }
             } else if (name === control) {
                 control.parent.get("surname").updateValueAndValidity();
@@ -101,9 +97,8 @@ export class AddingFormComponent implements OnInit {
                 break;
 
             default:
-                control = this.formModel.controls[controlName]
+                control = this.formModel.controls[controlName];
         }
-        
 
         if (control && control.invalid && control.touched) {
             let errors: string[] = this.getErrorMessages(control.errors);
@@ -129,7 +124,10 @@ export class AddingFormComponent implements OnInit {
                 arrayErrors.push("Неверный возраст");
             }
             if (errors.wrongName) {
-                arrayErrors.push("Имя не может совпадать с данным полем");
+                arrayErrors.push("Поле не должно совпадать с именем");
+            }
+            if (errors.wrongAvaregeGrade) {
+                arrayErrors.push("Средний бал не может быть отрицательным");
             }
         }
 

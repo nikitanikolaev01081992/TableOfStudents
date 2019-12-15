@@ -1,4 +1,10 @@
-<app-adding-form *ngIf="_showAddingForm" [dataFromParent]="getInfoForAddingForm()" (_submit)="submitFromChild($event)"></app-adding-form>
+<app-adding-form
+    *ngIf="_showAddingForm"
+    [dataFromParent]="itemForAddingForm"
+    [updateOrModify]="updateOrModify"
+    (_submit)="submitFromChild($event)"
+    (_close)="closeChild()"
+></app-adding-form>
 
 <h1>{{ title }}</h1>
 <div class="table-of-students">
@@ -99,7 +105,7 @@
                     <input type="checkbox" (input)="deleteElem(item); $event.target.checked = false" />
                 </td>
                 <td>
-                    <button (click)="showAddingForm('modify')">Изменить</button>
+                    <button (click)="showAddingForm('modify', item)">Изменить</button>
                 </td>
             </tr>
         </tbody>

@@ -15,20 +15,17 @@ export class AppComponent {
     dateValueMax: string = "";
     gradeValueMin: string = "";
     gradeValueMax: string = "";
+
+    //----------------------------------
+    //data bindings for addign form
     _showAddingForm: boolean;
-    updateOrModify: string = ""
+    itemForAddingForm: Student;
+    updateOrModify: string;
+    //----------------------------------
 
     constructor() {
         this.someData = new ListOfStudents<Student>(Student);
         this._showAddingForm = false;
-        this.updateOrModify = "update";
-    }
-
-    submitFromChild(item: any): void {
-        if (item.updateOrModify === "update") {
-            this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
-        }
-
     }
 
     // sortColumn is value of link variable with the same name
@@ -101,17 +98,44 @@ export class AppComponent {
         return item.index;
     }
 
-    // handler to show adding form
-    showAddingForm(updateOrModify: string): void {
+    //------------------------------------------------------------------
+    //some functions for adding form
+
+    // received event from adding form
+    submitFromChild(item: any): void {
+        if (item.updateOrModify === "update") {
+            this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
+        } else if (item.updateOrModify === "modify") {
+            //find and modify existed student
+            for (let student of this.someData.items) {
+                if (student.index === item.index) {
+                    for (let prop in student) {
+                        if (student.hasOwnProperty(prop)) {
+                            student[prop] = item[prop];
+                        }
+                    }
+                }
+            }
+        }
+        this._showAddingForm = false;
+    }
+
+    // handler to show adding form and initialize info for adding form
+    showAddingForm(updateOrModify: string, item?: Student): void {
         this._showAddingForm = true;
         this.updateOrModify = updateOrModify;
-    }
 
-
-    // provide information for adding form
-    getInfoForAddingForm(): any {
-        if (true) {
-
+        if (item) {
+            this.itemForAddingForm = item;
+        } else {
+            this.itemForAddingForm = new Student("", "", "", undefined, undefined);
         }
     }
+
+    // recieved event to close adding form
+    closeChild(): void {
+        this._showAddingForm = false;
+    }
+
+    //------------------------------------------------------------------
 }

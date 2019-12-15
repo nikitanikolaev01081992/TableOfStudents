@@ -42,7 +42,14 @@ export class Student {
 
     // return nice date string
     get dateOfBirth(): string {
-        const date = this._dateOfBirth;
-        return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+        const date: Date = this._dateOfBirth;
+
+        if (this._dateOfBirth) {
+            const dateMonth: string = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+            const dateDay: string = date.getDate() < 9 ? `0${date.getDate() + 1}` : `${date.getDate() + 1}`;
+            return `${date.getFullYear()}-${dateMonth}-${dateDay}`;
+        }
+
+        return "";
     }
 }
