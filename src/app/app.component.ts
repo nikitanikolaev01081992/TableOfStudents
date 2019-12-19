@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { Student } from "./model";
 import { ListOfStudents } from "./model";
 
@@ -6,6 +6,7 @@ import { ListOfStudents } from "./model";
     selector: "app-root",
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.less"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
     title = "Таблица Студентов";

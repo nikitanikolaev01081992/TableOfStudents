@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnChanges } from "@angular/core";
+import { Component, OnInit, Input, Output, OnChanges, ChangeDetectionStrategy } from "@angular/core";
 import { FormGroup, FormControl, Validators, PatternValidator, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { EventEmitter } from "@angular/core";
 import { InvokeFunctionExpr } from "@angular/compiler";
@@ -8,6 +8,7 @@ import { Student } from "../model";
     selector: "app-adding-form",
     templateUrl: "./adding-form.component.html",
     styleUrls: ["./adding-form.component.less"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddingFormComponent implements OnInit {
     formModel: FormGroup;
@@ -62,7 +63,7 @@ export class AddingFormComponent implements OnInit {
     }
 
     validateAvaregeGrade(control: AbstractControl): ValidationErrors | null {
-        if (+control.value < 0) {
+        if (+control.value < 0 || +control.value > 5) {
             return { ["wrongAvaregeGrade"]: true };
         }
     }
@@ -127,7 +128,7 @@ export class AddingFormComponent implements OnInit {
                 arrayErrors.push("Поле не должно совпадать с именем");
             }
             if (errors.wrongAvaregeGrade) {
-                arrayErrors.push("Средний бал не может быть отрицательным");
+                arrayErrors.push("Средний балл должен быть от 0 до 5");
             }
         }
 
