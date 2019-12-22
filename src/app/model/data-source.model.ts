@@ -1,4 +1,6 @@
 export class ListOfStudents<T> {
+    static index: number = 0;
+
     items: Array<T>;
     constructor(usedClass) {
         this.items = [
@@ -17,14 +19,24 @@ export class ListOfStudents<T> {
         }
     }
 
-    static index: number = 0;
+    modifyElem(elem: T, key: string): void {
+        for (const iterItem of this.items) {
+            if (iterItem[key] === elem[key]) {
+                for (const prop in elem) {
+                    if (iterItem.hasOwnProperty(prop)) {
+                        iterItem[prop] = elem[prop];
+                    }
+                }
+            }
+        }
+    }
 }
 
 export class Student {
     surname: string;
     name: string;
     patronymic: string;
-    _dateOfBirth: Date;
+    dateOfBirth: Date;
     avaregeGrade: number;
     isShown: boolean;
     index: number;
@@ -33,20 +45,19 @@ export class Student {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
-        this._dateOfBirth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth;
         this.avaregeGrade = avaregeGrade;
 
         this.isShown = true;
         this.index = ListOfStudents.index++;
     }
 
-    // return nice date string
-    get dateOfBirth(): string {
-        const date: Date = this._dateOfBirth;
+    getFormatedDate(): string {
+        const date: Date = this.dateOfBirth;
 
-        if (this._dateOfBirth) {
+        if (date) {
             const dateMonth: string = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
-            const dateDay: string = date.getDate() < 9 ? `0${date.getDate() + 1}` : `${date.getDate() + 1}`;
+            const dateDay: string = date.getDate() < 9 ? `0${date.getDate()}` : `${date.getDate()}`;
             return `${date.getFullYear()}-${dateMonth}-${dateDay}`;
         }
 

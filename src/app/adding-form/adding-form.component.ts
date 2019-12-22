@@ -1,26 +1,22 @@
-import { Component, OnInit, Input, Output, OnChanges, ChangeDetectionStrategy } from "@angular/core";
-import { FormGroup, FormControl, Validators, PatternValidator, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
-import { EventEmitter } from "@angular/core";
-import { InvokeFunctionExpr } from "@angular/compiler";
-import { Student } from "../model";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { Student } from "../model/data-source.model";
 
 @Component({
     selector: "app-adding-form",
     templateUrl: "./adding-form.component.html",
     styleUrls: ["./adding-form.component.less"],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddingFormComponent implements OnInit {
     formModel: FormGroup;
     validatorsForNames: ValidatorFn[];
     @Input() dataFromParent: Student;
     @Input() updateOrModify: string;
-    @Output() _submit = new EventEmitter();
-    @Output() _close = new EventEmitter();
+    @Output() _submit: EventEmitter<object> = new EventEmitter();
+    @Output() _close: EventEmitter<void> = new EventEmitter();
 
-    constructor() {}
-
-    ngOnInit() {
+    ngOnInit(): void {
         this.validatorsForNames = [Validators.required, Validators.pattern("[A-Za-zа-яА-я]+"), Validators.minLength(2), this.validatePersonInfo];
 
         this.formModel = new FormGroup({
@@ -29,19 +25,25 @@ export class AddingFormComponent implements OnInit {
                 name: new FormControl(this.dataFromParent.name, this.validatorsForNames),
                 patronymic: new FormControl(this.dataFromParent.patronymic, this.validatorsForNames),
             }),
-            _dateOfBirth: new FormControl(this.dataFromParent.dateOfBirth, [Validators.required, this.validateDate]),
+            dateOfBirth: new FormControl(this.dataFromParent.getFormatedDate(), [Validators.required, this.validateDate]),
             avaregeGrade: new FormControl(this.dataFromParent.avaregeGrade, [Validators.required, this.validateAvaregeGrade]),
         });
     }
 
     _onSubmit(event: Event): void {
-        let item: Student = Object.assign({}, this.dataFromParent, { updateOrModify: this.updateOrModify });
+        const item: Student = Object.assign({}, this.dataFromParent);
         item.surname = this.formModel.get("person.surname").value;
         item.name = this.formModel.get("person.name").value;
         item.patronymic = this.formModel.get("person.patronymic").value;
-        item._dateOfBirth = new Date(this.formModel.get("_dateOfBirth").value);
+        item.dateOfBirth = new Date(this.formModel.get("dateOfBirth").value);
         item.avaregeGrade = +this.formModel.get("avaregeGrade").value;
-        this._submit.emit(item);
+
+        const outPutItem = {
+            student: item,
+            updateOrModify: this.updateOrModify,
+        };
+
+        this._submit.emit(outPutItem);
     }
 
     closeMe(): void {
@@ -50,8 +52,8 @@ export class AddingFormComponent implements OnInit {
 
     validateDate(control: AbstractControl): ValidationErrors | null {
         if (control.value !== "") {
-            let dateInControl: number = new Date(control.value).getFullYear();
-            let validationDate: number = new Date().getFullYear();
+            const dateInControl: number = new Date(control.value).getFullYear();
+            const validationDate: number = new Date().getFullYear();
 
             // not very exact way but let it be for now
             if (validationDate - dateInControl < 10) {
@@ -70,7 +72,7 @@ export class AddingFormComponent implements OnInit {
 
     validatePersonInfo(control: AbstractControl): ValidationErrors | null {
         if (control.parent) {
-            let name: AbstractControl = control.parent.get("name");
+            const name: AbstractControl = control.parent.get("name");
 
             if (name !== control && control.value !== "") {
                 if (name.value.toLowerCase() === control.value.toLowerCase()) {
@@ -87,7 +89,6 @@ export class AddingFormComponent implements OnInit {
 
     getErrorText(controlName: string): string {
         let errorText: string = "";
-        let form: FormGroup;
         let control: AbstractControl;
 
         switch (controlName) {
@@ -102,14 +103,14 @@ export class AddingFormComponent implements OnInit {
         }
 
         if (control && control.invalid && control.touched) {
-            let errors: string[] = this.getErrorMessages(control.errors);
+            const errors: string[] = this.getErrorMessages(control.errors);
             errorText = errors.join("\n");
         }
         return errorText;
     }
 
     private getErrorMessages(errors: ValidationErrors): string[] {
-        let arrayErrors: string[] = [];
+        const arrayErrors: string[] = [];
 
         if (errors) {
             if (errors.minlength) {
@@ -134,6 +135,4 @@ export class AddingFormComponent implements OnInit {
 
         return arrayErrors;
     }
-
-    isInvalid(control: AbstractControl) {}
 }

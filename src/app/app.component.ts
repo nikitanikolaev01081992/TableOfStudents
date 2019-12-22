@@ -1,12 +1,11 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
-import { Student } from "./model";
-import { ListOfStudents } from "./model";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
+import { ListOfStudents, Student } from "./model/data-source.model";
 
 @Component({
     selector: "app-root",
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.less"],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
     title = "Таблица Студентов";
@@ -17,14 +16,14 @@ export class AppComponent {
     gradeValueMin: string = "";
     gradeValueMax: string = "";
 
-    //----------------------------------
-    //data bindings for addign form
+    // ----------------------------------
+    // data bindings for addign form
     _showAddingForm: boolean;
     itemForAddingForm: Student;
     updateOrModify: string;
-    //----------------------------------
+    // ----------------------------------
 
-    constructor() {
+    constructor(private ref: ChangeDetectorRef) {
         this.someData = new ListOfStudents<Student>(Student);
         this._showAddingForm = false;
     }
@@ -66,7 +65,7 @@ export class AppComponent {
         let resultDateCheck: boolean = false;
         let resultGradeCheck: boolean = false;
 
-        if (item._dateOfBirth >= dateValueMin && item._dateOfBirth <= dateValueMax) {
+        if (item.dateOfBirth >= dateValueMin && item.dateOfBirth <= dateValueMax) {
             resultDateCheck = true;
         }
 
@@ -84,7 +83,7 @@ export class AppComponent {
         }
     }
 
-    //don't allow negative numbers for grade min and max
+    // don't allow negative numbers for grade min and max
     validateInputGrade(): void {
         if (+this.gradeValueMin < 0) {
             this.gradeValueMin = "0";
@@ -99,26 +98,20 @@ export class AppComponent {
         return item.index;
     }
 
-    //------------------------------------------------------------------
-    //some functions for adding form
+    // ------------------------------------------------------------------
+    // some functions for adding form
 
     // received event from adding form
-    submitFromChild(item: any): void {
+    submitFromChild(item: { student: Student; updateOrModify: string }): void {
+        const student = item.student;
         if (item.updateOrModify === "update") {
-            this.someData.items.push(new Student(item.surname, item.name, item.patronymic, item._dateOfBirth, item.avaregeGrade));
+            this.someData.items.push(new Student(student.surname, student.name, student.patronymic, student.dateOfBirth, student.avaregeGrade));
         } else if (item.updateOrModify === "modify") {
-            //find and modify existed student
-            for (let student of this.someData.items) {
-                if (student.index === item.index) {
-                    for (let prop in student) {
-                        if (student.hasOwnProperty(prop)) {
-                            student[prop] = item[prop];
-                        }
-                    }
-                }
-            }
+            // modify existed student
+            this.someData.modifyElem(student, "index");
         }
         this._showAddingForm = false;
+        this.ref.detectChanges();
     }
 
     // handler to show adding form and initialize info for adding form
@@ -126,11 +119,7 @@ export class AppComponent {
         this._showAddingForm = true;
         this.updateOrModify = updateOrModify;
 
-        if (item) {
-            this.itemForAddingForm = item;
-        } else {
-            this.itemForAddingForm = new Student("", "", "", undefined, undefined);
-        }
+        this.itemForAddingForm = item ? item : new Student("", "", "", undefined, undefined);
     }
 
     // recieved event to close adding form
@@ -138,5 +127,5 @@ export class AppComponent {
         this._showAddingForm = false;
     }
 
-    //------------------------------------------------------------------
+    // ------------------------------------------------------------------
 }

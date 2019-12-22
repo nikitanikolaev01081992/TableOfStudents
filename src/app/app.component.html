@@ -95,17 +95,17 @@
                     table__row_yellow: valuesToFind ? (item.surname + ' ' + item.name).toLowerCase().includes(valuesToFind.toLowerCase()) : false,
                     table__row_hidden: !filterItem(item)
                 }"
+                [appChangeElem]="item"
+                (changeItem)="showAddingForm('modify', $event)"
             >
                 <td>{{ item.surname }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.patronymic }}</td>
-                <td>{{ item.dateOfBirth }}</td>
+                <td>{{ item.dateOfBirth | formatDate: item }}</td>
                 <td>{{ item.avaregeGrade }}</td>
+
                 <td>
                     <input type="checkbox" (input)="deleteElem(item); $event.target.checked = false" />
-                </td>
-                <td>
-                    <button (click)="showAddingForm('modify', item)">Изменить</button>
                 </td>
             </tr>
         </tbody>
