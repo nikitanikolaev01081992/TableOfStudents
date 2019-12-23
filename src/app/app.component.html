@@ -103,7 +103,7 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.patronymic }}</td>
                 <td>{{ item.dateOfBirth | formatDate: item }}</td>
-                <td>{{ item.avaregeGrade }}</td>
+                <td>{{ item.avaregeGrade | formatGrade }}</td>
 
                 <td>
                     <input type="checkbox" (input)="deleteElem(item); $event.target.checked = false" />
