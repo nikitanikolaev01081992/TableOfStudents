@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from "@angular/core";
     name: "formatGrade",
 })
 export class FormatGradePipe implements PipeTransform {
-    transform(value: number): any {
+    transform(value: number): string {
         if (value === 5) {
             return `${value} - Отлично`;
         }
