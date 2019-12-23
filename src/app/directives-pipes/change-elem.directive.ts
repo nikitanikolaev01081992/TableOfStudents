@@ -1,3 +1,6 @@
+// catch event from elem and make new event
+// reciever should provide function for changing elem
+
 import { Directive, EventEmitter, HostListener, Input, Output } from "@angular/core";
 import { Student } from "../model/data-source.model";
 
