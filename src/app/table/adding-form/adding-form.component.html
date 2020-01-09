@@ -50,8 +50,8 @@
         </div>
 
         <button class="adding-form__button" type="submit" [disabled]="!formModel.valid">
-            {{ updateOrModify === "update" ? "Добавить" : "Изменить" }}
+            {{ !isEditMode ? "Добавить" : "Изменить" }}
         </button>
-        <button class="adding-form__button" (click)="closeMe()">Отмена</button>
+        <button class="adding-form__button" (click)="navigateBack('cancel')">Отмена</button>
     </form>
 </div>

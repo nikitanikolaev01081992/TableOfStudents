@@ -1,0 +1,7 @@
+[
+    { "surname": "Ivanov", "name": "Ivan", "patronymic": "Ivanovich", "dateOfBirth": "1993, 1, 1", "avaregeGrade": 2.5, "index": 0 },
+    { "surname": "Kirilov", "name": "Kirill", "patronymic": "Kirillovich", "dateOfBirth": "1992, 4, 4", "avaregeGrade": 4, "index": 1 },
+    { "surname": "Golovkin", "name": "Evgeney", "patronymic": "Evgenievich", "dateOfBirth": "1992, 2, 6", "avaregeGrade": 3.5, "index": 2 },
+    { "surname": "Golovkina", "name": "Sveta", "patronymic": "Evgenievich", "dateOfBirth": "1993, 2, 6", "avaregeGrade": 5, "index": 3 },
+    { "surname": "Kirilova", "name": "Darya", "patronymic": "Nikitina", "dateOfBirth": "1992, 9, 12", "avaregeGrade": 2.9, "index": 4 }
+]

@@ -1,0 +1,99 @@
+.table-of-students {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
+}
+
+.table-of-students__filtration {
+    margin-bottom: 15px;
+}
+
+.find-criteries {
+    display: flex;
+    flex-direction: column;
+}
+
+.find-item {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+
+    &:last-of-type {
+        border-bottom: 1px solid #ddd;
+    }
+
+    &__header {
+        display: inline-block;
+        width: 20%;
+    }
+
+    &__input {
+        display: inline-block;
+        padding: 0 10px;
+    }
+}
+
+.gradeCheckbox {
+    padding: 10px 0;
+}
+
+.table-of-students__output {
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    text-align: center;
+
+    & th,
+    & td {
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    & th {
+        font-weight: 600;
+    }
+
+    & [type="checkbox"] {
+        cursor: pointer;
+    }
+}
+
+.table__row {
+    &_red {
+        background-color: rgba(192, 35, 35, 0.699);
+    }
+
+    &_yellow {
+        background-color: yellow;
+    }
+
+    &_hidden {
+        display: none;
+    }
+}
+
+.tooltip {
+    position: relative;
+    text-decoration: underline;
+    color: #00f;
+    cursor: help;
+
+    &::after {
+        content: "Подсказка: кликните на строку, чтобы вызвать форму измения данного студента.";
+        color: black;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: seagreen;
+        border: 0.5rem solid darkorange;
+        border-radius: 10px;
+        width: 10%;
+        padding: 10px;
+        transition: all 0.5s ease-out;
+    }
+}
+
+.button-not-found-page {
+    font-size: 1.5em;
+    padding: 10px;
+    margin-top: 20px;
+}

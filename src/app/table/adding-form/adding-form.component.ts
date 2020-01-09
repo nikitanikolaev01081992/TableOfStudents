@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
-import { Student } from "../model/data-source.model";
+import { Router, ActivatedRoute } from "@angular/router";
+
+import { StudentsService } from "src/app/directives-pipes-services/students.service";
+import { IStudent } from "src/app/student";
 
 @Component({
     selector: "app-adding-form",
@@ -9,45 +12,108 @@ import { Student } from "../model/data-source.model";
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddingFormComponent implements OnInit {
+    studentId: number;
+    dataOfStudent: IStudent;
+    isEditMode: boolean;
+
     formModel: FormGroup;
     validatorsForNames: ValidatorFn[];
-    @Input() dataFromParent: Student;
-    @Input() updateOrModify: string;
-    @Output() _submit: EventEmitter<object> = new EventEmitter();
-    @Output() _close: EventEmitter<void> = new EventEmitter();
+    // @Input() dataOfStudent: Student;
+    // @Input() updateOrModify: string;
+    // @Output() _submit: EventEmitter<object> = new EventEmitter();
+    // @Output() _close: EventEmitter<void> = new EventEmitter();
+
+    constructor(private _ref: ChangeDetectorRef, private _router: Router, private _route: ActivatedRoute, private _studentSerive: StudentsService) {}
 
     ngOnInit(): void {
+        //create validators for names
         this.validatorsForNames = [Validators.required, Validators.pattern("[A-Za-zа-яА-я]+"), Validators.minLength(2), this.validatePersonInfo];
 
+        //create objects of forms
         this.formModel = new FormGroup({
             person: new FormGroup({
-                surname: new FormControl(this.dataFromParent.surname, this.validatorsForNames),
-                name: new FormControl(this.dataFromParent.name, this.validatorsForNames),
-                patronymic: new FormControl(this.dataFromParent.patronymic, this.validatorsForNames),
+                surname: new FormControl("", this.validatorsForNames),
+                name: new FormControl("", this.validatorsForNames),
+                patronymic: new FormControl("", this.validatorsForNames),
             }),
-            dateOfBirth: new FormControl(this.dataFromParent.getFormatedDate(), [Validators.required, this.validateDate]),
-            avaregeGrade: new FormControl(this.dataFromParent.avaregeGrade, [Validators.required, this.validateAvaregeGrade]),
+            dateOfBirth: new FormControl("", [Validators.required, this.validateDate]),
+            avaregeGrade: new FormControl("", [Validators.required, this.validateAvaregeGrade]),
+        });
+
+        //get id of student
+        this._route.paramMap.subscribe(params => {
+            this.studentId = params.get("id") ? +params.get("id") : null;
+
+            if (this.studentId !== null) {
+                this.isEditMode = true;
+            } else {
+                this.isEditMode = false;
+            }
+
+            console.log("ID is " + this.studentId);
+        });
+
+        //get data for specific student
+        this._studentSerive.getStudent(this.studentId).subscribe(data => {
+            this.dataOfStudent = data;
+
+            if (this.dataOfStudent) {
+                this.formModel.setValue({
+                    person: {
+                        surname: this.dataOfStudent.surname,
+                        name: this.dataOfStudent.name,
+                        patronymic: this.dataOfStudent.patronymic,
+                    },
+                    dateOfBirth: this.dataOfStudent.dateOfBirth,
+                    avaregeGrade: this.dataOfStudent.avaregeGrade,
+                });
+            }
         });
     }
 
     _onSubmit(event: Event): void {
-        const item: Student = Object.assign({}, this.dataFromParent);
+        const item: IStudent = Object.assign({}, this.dataOfStudent);
         item.surname = this.formModel.get("person.surname").value;
         item.name = this.formModel.get("person.name").value;
         item.patronymic = this.formModel.get("person.patronymic").value;
         item.dateOfBirth = new Date(this.formModel.get("dateOfBirth").value);
         item.avaregeGrade = +this.formModel.get("avaregeGrade").value;
 
-        const outPutItem = {
-            student: item,
-            updateOrModify: this.updateOrModify,
-        };
+        // const outPutItem = {
+        //     student: item,
+        //     // updateOrModify: this.updateOrModify,
+        // };
 
-        this._submit.emit(outPutItem);
+        // this._submit.emit(outPutItem);
+        if (this.isEditMode) {
+            this.navigateBack("edit", item, this.studentId);
+        } else {
+            this.navigateBack("create", item);
+        }
     }
 
-    closeMe(): void {
-        this._close.emit();
+    navigateBack(mode: string, item?: IStudent, id?: number): void {
+        let routeToNavigate: string;
+
+        if (this.isEditMode) {
+            //we are in edit mode, url looks like edit/0
+            routeToNavigate = "../../";
+        } else {
+            routeToNavigate = "../";
+        }
+
+        switch (mode) {
+            case "edit":
+                this._studentSerive.modifyElem(item, id);
+                break;
+
+            case "create":
+                this._studentSerive.createElem(item);
+                break;
+        }
+
+        this._ref.detectChanges();
+        this._router.navigate([routeToNavigate], { relativeTo: this._route });
     }
 
     validateDate(control: AbstractControl): ValidationErrors | null {
