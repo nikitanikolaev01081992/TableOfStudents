@@ -11,36 +11,23 @@ export class StudentsService {
     static index: number = 0;
 
     private items: IStudent[] = [];
-    private;
+    observervableForData: Observable<IStudent[]>;
 
     constructor(private isDebug: boolean, private _http: HttpClient) {
-        // if (isDebug) {
-        //     this.items = [
-        //         new Student("Ivanov", "Ivan", "Ivanovich", new Date(1993, 1, 1), 2.5),
-        //         new Student("Kirilov", "Kirill", "Kirillovich", new Date(1992, 4, 4), 4),
-        //         new Student("Golovkin", "Evgeney", "Evgenievich", new Date(1992, 2, 6), 3.5),
-        //         new Student("Golovkina", "Sveta", "Evgenievich", new Date(1993, 2, 6), 5),
-        //         new Student("Kirilova", "Darya", "Nikitina", new Date(1992, 9, 12), 2.9),
-        //     ];
-        // } else {
-        //     _http.get<IStudent[]>(this._url).subscribe(data => {
-        //         this.items = data;
-        //     });
-        // }
-    }
-
-    public getData(): Observable<IStudent[]> {
-        return new Observable(observer => {
-            if (this.isDebug) {
+        this.observervableForData = new Observable((observer) => {
+            if (this.items.length !== 0) {
+                observer.next(this.items);
+            } else if (this.isDebug) {
                 this.items = [
-                    new Student("Ivanov", "Ivan", "Ivanovich", new Date(1993, 1, 1), 2.5),
-                    new Student("Kirilov", "Kirill", "Kirillovich", new Date(1992, 4, 4), 4),
-                    new Student("Golovkin", "Evgeney", "Evgenievich", new Date(1992, 2, 6), 3.5),
-                    new Student("Golovkina", "Sveta", "Evgenievich", new Date(1993, 2, 6), 5),
-                    new Student("Kirilova", "Darya", "Nikitina", new Date(1992, 9, 12), 2.9),
+                    new Student("Ivanov", "Ivan", "Ivanovich", new Date("1993, 1, 1"), 2.5),
+                    new Student("Kirilov", "Kirill", "Kirillovich", new Date("1992, 4, 4"), 4),
+                    new Student("Golovkin", "Evgeney", "Evgenievich", new Date("1992, 2, 6"), 3.5),
+                    new Student("Golovkina", "Sveta", "Evgenievich", new Date("1993, 2, 6"), 5),
+                    new Student("Kirilova", "Darya", "Nikitina", new Date("1992, 9, 12"), 2.9),
                 ];
                 observer.next(this.items);
             } else {
+
                 this._http.get<IStudent[]>(this._url).subscribe(data => {
                     for (let key in data) {
                         this.createElem(data[key]);
@@ -48,7 +35,13 @@ export class StudentsService {
                     observer.next(this.items);
                 });
             }
-        });
+        })
+        
+    }
+
+    // public getData(): Observable<IStudent[]> {
+    public getData(): Observable<IStudent[]> {
+        return this.observervableForData;
     }
 
     public getStudent(id: number): Observable<IStudent> {
@@ -64,12 +57,13 @@ export class StudentsService {
         this.items.push(new Student(item.surname, item.name, item.patronymic, new Date(item.dateOfBirth), item.avaregeGrade));
     }
 
-    public deleteElement(id: number): void {
+    public deleteElement(id: number): IStudent[] {
         let items: IStudent[] = this.items.filter(item => {
             return item.index !== id;
         });
 
         this.items = items;
+        return this.items;
     }
 
     public modifyElem(elem: IStudent, id: number): void {
