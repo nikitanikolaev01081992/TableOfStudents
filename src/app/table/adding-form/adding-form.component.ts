@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { StudentsService } from "src/app/directives-pipes-services/students.service";
 import { IStudent } from "src/app/student";
@@ -8,7 +8,7 @@ import { IStudent } from "src/app/student";
 @Component({
     selector: "app-adding-form",
     templateUrl: "./adding-form.component.html",
-    styleUrls: ["./adding-form.component.less"]
+    styleUrls: ["./adding-form.component.less"],
 })
 export class AddingFormComponent implements OnInit {
     studentId: number;
@@ -25,10 +25,10 @@ export class AddingFormComponent implements OnInit {
     constructor(private _ref: ChangeDetectorRef, private _router: Router, private _route: ActivatedRoute, private _studentSerive: StudentsService) {}
 
     ngOnInit(): void {
-        //create validators for names
+        // create validators for names
         this.validatorsForNames = [Validators.required, Validators.pattern("[A-Za-zа-яА-я]+"), Validators.minLength(2), this.validatePersonInfo];
 
-        //create objects of forms
+        // create objects of forms
         this.formModel = new FormGroup({
             person: new FormGroup({
                 surname: new FormControl("", this.validatorsForNames),
@@ -39,22 +39,18 @@ export class AddingFormComponent implements OnInit {
             avaregeGrade: new FormControl("", [Validators.required, this.validateAvaregeGrade]),
         });
 
-        //get id of student
+        // get id of student
         this._route.paramMap.subscribe(params => {
             this.studentId = params.get("id") ? +params.get("id") : null;
 
-            if (this.studentId !== null) {
-                this.isEditMode = true;
-            } else {
-                this.isEditMode = false;
-            }
+            this.isEditMode = this.studentId !== null ? true : false;
 
             console.log("ID is " + this.studentId);
         });
 
-        //get data for specific student
+        // get data for specific student
         this._studentSerive.getStudent(this.studentId).subscribe(data => {
-            this.dataOfStudent = data; 
+            this.dataOfStudent = data;
 
             if (this.dataOfStudent) {
                 this.formModel.setValue({
@@ -94,12 +90,8 @@ export class AddingFormComponent implements OnInit {
     navigateBack(mode: string, item?: IStudent, id?: number): void {
         let routeToNavigate: string;
 
-        if (this.isEditMode) {
-            //we are in edit mode, url looks like edit/0
-            routeToNavigate = "../../";
-        } else {
-            routeToNavigate = "../";
-        }
+        // if we are in edit mode, url looks like edit/0
+        routeToNavigate = this.isEditMode ? "../../" : "../";
 
         switch (mode) {
             case "edit":

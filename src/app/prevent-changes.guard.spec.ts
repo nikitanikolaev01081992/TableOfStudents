@@ -1,15 +1,15 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import { inject, TestBed } from "@angular/core/testing";
 
-import { PreventChangesGuard } from './prevent-changes.guard';
+import { PreventChangesGuard } from "./prevent-changes.guard";
 
-describe('PreventChangesGuard', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [PreventChangesGuard]
+describe("PreventChangesGuard", () => {
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [PreventChangesGuard],
+        });
     });
-  });
 
-  it('should ...', inject([PreventChangesGuard], (guard: PreventChangesGuard) => {
-    expect(guard).toBeTruthy();
-  }));
+    it("should ...", inject([PreventChangesGuard], (guard: PreventChangesGuard) => {
+        expect(guard).toBeTruthy();
+    }));
 });

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnChanges } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { StudentsService } from "../directives-pipes-services/students.service";
 import { IStudent } from "../student";
@@ -33,7 +33,7 @@ export class TableComponent implements OnInit {
         // this.students= this._studentSerive.getData();
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this._studentSerive.getData().subscribe(data => {
             this.students = data;
             this._ref.markForCheck();
@@ -91,10 +91,12 @@ export class TableComponent implements OnInit {
 
     // delete item from data
     public deleteElem(id: number): void {
-        if (confirm(`Удалить студента(ку) ${this.students[id].surname} ${this.students[id].name} ${this.students[id].patronymic} ?`)) {
-            this.students = this._studentSerive.deleteElement(id);
-            this._ref.markForCheck();
-        }
+        this._studentSerive.getStudent(id).subscribe(student => {
+            if (confirm(`Удалить студента(ку) ${student.surname} ${student.name} ${student.patronymic} ?`)) {
+                this.students = this._studentSerive.deleteElement(id);
+                this._ref.markForCheck();
+            }
+        });
     }
 
     // don't allow negative numbers for grade min and max
@@ -131,7 +133,7 @@ export class TableComponent implements OnInit {
 
     // handler to navigate to adding form
     showAddingForm(item?: IStudent): void {
-        //this._showAddingForm = true;
+        // this._showAddingForm = true;
         // this.updateOrModify = updateOrModify;
 
         // this.itemForAddingForm = item ? item : new Student("", "", "", undefined, undefined);
@@ -150,7 +152,7 @@ export class TableComponent implements OnInit {
 
     // ------------------------------------------------------------------
 
-    gotoNotFoundPage() {
+    gotoNotFoundPage(): void {
         this._router.navigate(["/PageNotFound"]);
     }
 }

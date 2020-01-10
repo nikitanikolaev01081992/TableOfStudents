@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
-import { TableComponent } from "./table/table.component";
-import { AddingFormComponent } from "./table/adding-form/adding-form.component";
 import { PreventChangesGuard } from "./prevent-changes.guard";
+import { AddingFormComponent } from "./table/adding-form/adding-form.component";
+import { TableComponent } from "./table/table.component";
 
 const routes: Routes = [
     {

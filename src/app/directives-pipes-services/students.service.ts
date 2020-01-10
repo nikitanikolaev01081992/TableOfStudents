@@ -1,14 +1,14 @@
-import { Injectable, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { IStudent } from "../student";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { IStudent } from "../student";
 
 @Injectable({
     providedIn: "root",
 })
 export class StudentsService {
-    private _url = "../../assets/students.json";
     static index: number = 0;
+    private _url = "../../assets/students.json";
 
     private items: IStudent[] = [];
     observervableForData: Observable<IStudent[]>;
@@ -28,9 +28,11 @@ export class StudentsService {
                 observer.next(this.items);
             } else {
                 this._http.get<IStudent[]>(this._url).subscribe(data => {
-                    for (let key in data) {
-                        this.createElem(data[key]);
-                    }
+                    data.forEach(elem => {
+                        if (elem) {
+                            this.createElem(elem);
+                        }
+                    });
                     observer.next(this.items);
                 });
             }
@@ -44,19 +46,19 @@ export class StudentsService {
 
     public getStudent(id: number): Observable<IStudent> {
         return new Observable(observer => {
-            let items: IStudent[] = this.items.filter(item => {
+            const items: IStudent[] = this.items.filter(item => {
                 return item.index === id;
             });
             observer.next(items[0]);
         });
     }
 
-    public createElem(item: IStudent) {
+    public createElem(item: IStudent): void {
         this.items.push(new Student(item.surname, item.name, item.patronymic, new Date(item.dateOfBirth), item.avaregeGrade));
     }
 
     public deleteElement(id: number): IStudent[] {
-        let items: IStudent[] = this.items.filter(item => {
+        const items: IStudent[] = this.items.filter(item => {
             return item.index !== id;
         });
 
