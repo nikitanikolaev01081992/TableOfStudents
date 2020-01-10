@@ -10,7 +10,7 @@ import { IStudent } from "../student";
     styleUrls: ["./table.component.less"],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
     title = "Таблица Студентов";
     // someData: ListOfStudents<Student>;
     valuesToFind: string = "";
@@ -30,9 +30,12 @@ export class TableComponent {
     constructor(private _ref: ChangeDetectorRef, private _router: Router, private _route: ActivatedRoute, private _studentSerive: StudentsService) {
         // this.someData = new ListOfStudents<Student>(Student);
         // this._showAddingForm = false;
+    }
+
+    ngOnInit() {
         this._studentSerive.getData().subscribe(data => {
             this.students = data;
-            _ref.markForCheck();
+            this._ref.markForCheck();
         });
     }
 

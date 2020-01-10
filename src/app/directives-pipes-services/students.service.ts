@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { IStudent } from "../student";
 import { Observable } from "rxjs";
@@ -11,7 +11,6 @@ export class StudentsService {
     static index: number = 0;
 
     private items: IStudent[] = [];
-    private;
 
     constructor(private isDebug: boolean, private _http: HttpClient) {
         // if (isDebug) {
@@ -27,27 +26,43 @@ export class StudentsService {
         //         this.items = data;
         //     });
         // }
+        if (this.isDebug) {
+            this.items = [
+                new Student("Ivanov", "Ivan", "Ivanovich", new Date(1993, 1, 1), 2.5),
+                new Student("Kirilov", "Kirill", "Kirillovich", new Date(1992, 4, 4), 4),
+                new Student("Golovkin", "Evgeney", "Evgenievich", new Date(1992, 2, 6), 3.5),
+                new Student("Golovkina", "Sveta", "Evgenievich", new Date(1993, 2, 6), 5),
+                new Student("Kirilova", "Darya", "Nikitina", new Date(1992, 9, 12), 2.9),
+            ];
+        } else {
+            this._http.get<IStudent[]>(this._url).subscribe(data => {
+                for (let key in data) {
+                    this.createElem(data[key]);
+                }
+            });
+        }
     }
 
     public getData(): Observable<IStudent[]> {
         return new Observable(observer => {
-            if (this.isDebug) {
-                this.items = [
-                    new Student("Ivanov", "Ivan", "Ivanovich", new Date(1993, 1, 1), 2.5),
-                    new Student("Kirilov", "Kirill", "Kirillovich", new Date(1992, 4, 4), 4),
-                    new Student("Golovkin", "Evgeney", "Evgenievich", new Date(1992, 2, 6), 3.5),
-                    new Student("Golovkina", "Sveta", "Evgenievich", new Date(1993, 2, 6), 5),
-                    new Student("Kirilova", "Darya", "Nikitina", new Date(1992, 9, 12), 2.9),
-                ];
-                observer.next(this.items);
-            } else {
-                this._http.get<IStudent[]>(this._url).subscribe(data => {
-                    for (let key in data) {
-                        this.createElem(data[key]);
-                    }
-                    observer.next(this.items);
-                });
-            }
+            observer.next(this.items);
+            // if (this.isDebug) {
+            //     this.items = [
+            //         new Student("Ivanov", "Ivan", "Ivanovich", new Date(1993, 1, 1), 2.5),
+            //         new Student("Kirilov", "Kirill", "Kirillovich", new Date(1992, 4, 4), 4),
+            //         new Student("Golovkin", "Evgeney", "Evgenievich", new Date(1992, 2, 6), 3.5),
+            //         new Student("Golovkina", "Sveta", "Evgenievich", new Date(1993, 2, 6), 5),
+            //         new Student("Kirilova", "Darya", "Nikitina", new Date(1992, 9, 12), 2.9),
+            //     ];
+            //     observer.next(this.items);
+            // } else {
+            //     this._http.get<IStudent[]>(this._url).subscribe(data => {
+            //         for (let key in data) {
+            //             this.createElem(data[key]);
+            //         }
+            //         observer.next(this.items);
+            //     });
+            // }
         });
     }
 
