@@ -8,8 +8,7 @@ import { IStudent } from "src/app/student";
 @Component({
     selector: "app-adding-form",
     templateUrl: "./adding-form.component.html",
-    styleUrls: ["./adding-form.component.less"],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ["./adding-form.component.less"]
 })
 export class AddingFormComponent implements OnInit {
     studentId: number;
@@ -55,7 +54,7 @@ export class AddingFormComponent implements OnInit {
 
         //get data for specific student
         this._studentSerive.getStudent(this.studentId).subscribe(data => {
-            this.dataOfStudent = data;
+            this.dataOfStudent = data; 
 
             if (this.dataOfStudent) {
                 this.formModel.setValue({
@@ -64,7 +63,7 @@ export class AddingFormComponent implements OnInit {
                         name: this.dataOfStudent.name,
                         patronymic: this.dataOfStudent.patronymic,
                     },
-                    dateOfBirth: this.dataOfStudent.dateOfBirth,
+                    dateOfBirth: this.dataOfStudent.getFormatedDate(),
                     avaregeGrade: this.dataOfStudent.avaregeGrade,
                 });
             }

@@ -7,8 +7,7 @@ import { AppRoutingModule, routeComponents } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { DirectivesPipesModule } from "./directives-pipes-services/directives-pipes.module";
 import { StudentsService } from "./directives-pipes-services/students.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
+
 
 @NgModule({
     declarations: [AppComponent, routeComponents],

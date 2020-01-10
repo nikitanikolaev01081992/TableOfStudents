@@ -30,6 +30,7 @@ export class TableComponent implements OnInit {
     constructor(private _ref: ChangeDetectorRef, private _router: Router, private _route: ActivatedRoute, private _studentSerive: StudentsService) {
         // this.someData = new ListOfStudents<Student>(Student);
         // this._showAddingForm = false;
+        // this.students= this._studentSerive.getData();
     }
 
     ngOnInit() {
@@ -91,8 +92,8 @@ export class TableComponent implements OnInit {
     // delete item from data
     public deleteElem(id: number): void {
         if (confirm(`Удалить студента(ку) ${this.students[id].surname} ${this.students[id].name} ${this.students[id].patronymic} ?`)) {
-            this._studentSerive.deleteElement(id);
-            this._ref.detectChanges();
+            this.students = this._studentSerive.deleteElement(id);
+            this._ref.markForCheck();
         }
     }
 
